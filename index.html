@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Video in a Scheduler Timeline</title>
+	<meta name="description" content="A video playing inside DHTMLX Scheduler's Timeline view - every rectangle is a real scheduler event at a real point in time.">
+</head>
+<body>
+
+<header class="bar">
+	<div class="brand">
+		<h1>Video in a Scheduler Timeline</h1>
+		<a href="https://github.com/DHTMLX/scheduler-video-timeline-demo#readme" id="post-link" target="_blank" rel="noopener">read the story</a>
+	</div>
+
+	<label>size <select id="preset"></select></label>
+
+	<div class="segmented">
+		<button id="btn-generated" type="button">built-in clip</button>
+		<label class="file">upload video<input id="file" type="file" accept="video/*"></label>
+		<button id="btn-camera" type="button">camera</button>
+	</div>
+
+	<div class="segmented">
+		<button id="btn-play" type="button">play / pause</button>
+		<button id="btn-bench" type="button">run benchmark</button>
+	</div>
+</header>
+
+<main>
+	<div class="stage">
+		<div id="scheduler_here" class="dhx_cal_container">
+			<div class="dhx_cal_header"></div>
+			<div class="dhx_cal_data"></div>
+		</div>
+
+		<div id="empty-state" class="empty">
+			<h2>This timeline is about to play a video</h2>
+			<p>
+				Every rectangle you are about to see is a real scheduler event with a real
+				start and end date. Drop a video file here to play it, or pick a source.
+			</p>
+			<div class="choices">
+				<label class="file" for="file">upload a video file</label>
+				<button id="empty-camera" type="button">use your webcam</button>
+				<button id="empty-generated" type="button">use the synthetic clip</button>
+			</div>
+			<p class="small">
+				Nothing leaves your machine - the video is decoded in the browser and never uploaded.
+			</p>
+		</div>
+	</div>
+
+	<aside id="hud" class="hud">
+		<h2>frame</h2>
+		<dl>
+			<dt>fps</dt><dd data-hud="fps">-</dd>
+			<dt>sample</dt><dd><span data-hud="sample">-</span> ms</dd>
+			<dt>encode</dt><dd><span data-hud="encode">-</span> ms</dd>
+			<dt>diff</dt><dd><span data-hud="diff">-</span> ms</dd>
+			<dt>scheduler</dt><dd><span data-hud="render">-</span> ms</dd>
+			<dt>total</dt><dd><span data-hud="total">-</span> ms</dd>
+			<dt>p95</dt><dd><span data-hud="p95">-</span> ms</dd>
+		</dl>
+
+		<h2>load</h2>
+		<dl>
+			<dt>pool</dt><dd data-hud="pool">-</dd>
+			<dt>changed</dt><dd data-hud="changed">-</dd>
+			<dt>grid</dt><dd data-hud="grid">-</dd>
+			<dt>frames</dt><dd data-hud="frames">-</dd>
+		</dl>
+
+		<h2>setup</h2>
+		<p class="small" data-hud="source">-</p>
+		<p class="small muted" id="status">starting</p>
+
+		<table id="results" class="results" hidden></table>
+
+		<p class="small muted note">
+			Drop a video file anywhere on the page to run it through the scheduler.
+		</p>
+	</aside>
+</main>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

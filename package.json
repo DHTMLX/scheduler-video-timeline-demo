@@ -1,0 +1,40 @@
+{
+  "name": "scheduler-video-timeline-demo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Plays a video inside the DHTMLX Scheduler Timeline view - every rectangle is a real scheduler event at a real point in time.",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "bench": "vite build && node bench/index.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1",
+    "vite": "^8.2.1"
+  },
+  "author": "DHTMLX Team <support@dhtmlx.com>",
+  "license": "MIT",
+  "homepage": "https://dhtmlx.github.io/scheduler-video-timeline-demo/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DHTMLX/scheduler-video-timeline-demo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DHTMLX/scheduler-video-timeline-demo/issues"
+  },
+  "keywords": [
+    "dhtmlx",
+    "scheduler",
+    "timeline",
+    "performance",
+    "benchmark",
+    "video",
+    "demo"
+  ],
+  "dependencies": {
+    "@dhx/trial-scheduler": "^7.2.15"
+  }
+}

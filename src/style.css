@@ -1,0 +1,219 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+	font-family: Inter, Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	background: #14161a;
+	color: #e8eaed;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+.bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 14px;
+	padding: 10px 16px;
+	background: linear-gradient(#242832, #1a1d23);
+	border-bottom: 1px solid #333947;
+}
+
+/* the title takes the slack, so the controls sit together on the right */
+.brand {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	margin-right: auto;
+}
+
+.brand h1 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.brand a {
+	color: #7ea2e8;
+	text-decoration: none;
+	font-size: 12px;
+}
+
+.brand a:hover { text-decoration: underline; }
+
+/* buttons that belong together read as one control */
+.segmented { display: flex; }
+.segmented > * { border-radius: 0; }
+.segmented > * + * { margin-left: -1px; }
+.segmented > :first-child { border-radius: 4px 0 0 4px; }
+.segmented > :last-child { border-radius: 0 4px 4px 0; }
+.segmented > :hover { position: relative; }
+
+.muted { color: #8b929e; }
+.small { font-size: 12px; }
+.note { margin-top: 18px; line-height: 1.5; }
+
+button, select, .file {
+	background: #2b303a;
+	color: #e8eaed;
+	border: 1px solid #3a4150;
+	border-radius: 4px;
+	padding: 5px 10px;
+	font: inherit;
+	cursor: pointer;
+}
+
+button:hover, .file:hover { background: #353c48; border-color: #4b5364; }
+button:active { background: #22262e; }
+
+:focus-visible { outline: 2px solid #4b7bd6; outline-offset: 1px; }
+
+/* the primary action, so it does not disappear among the source buttons */
+#btn-bench { background: #33508f; border-color: #41619f; }
+#btn-bench:hover { background: #3c5c9f; border-color: #4d70b2; }
+
+/* the native file input is unstyleable, so the label is the button */
+.file input { display: none; }
+
+label:not(.file) {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: #9aa2af;
+}
+
+main {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+}
+
+.stage {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	display: flex;
+}
+
+#scheduler_here {
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+}
+
+.empty {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 14px;
+	padding: 24px;
+	text-align: center;
+	background: rgba(16, 18, 22, 0.94);
+}
+
+.empty[hidden] { display: none; } /* the attribute alone loses to display:flex */
+
+/* feedback while a file is over the page, so the drop target is obvious */
+body.dropping::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	border: 2px dashed #5b8ae0;
+	pointer-events: none;
+	z-index: 10;
+}
+
+body.dropping .empty { background: rgba(24, 38, 64, 0.96); }
+
+.empty h2 { margin: 0; font-size: 19px; font-weight: 600; }
+.empty p { margin: 0; max-width: 440px; line-height: 1.55; color: #9aa2af; }
+.empty .choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 4px; }
+
+.hud {
+	width: 250px;
+	flex-shrink: 0;
+	padding: 12px 14px;
+	background: #1c1f25;
+	border-left: 1px solid #2a2e36;
+	overflow-y: auto;
+}
+
+.hud h2 {
+	margin: 14px 0 6px;
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: #8b929e;
+}
+
+.hud h2:first-child { margin-top: 0; }
+
+.hud dl {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 3px 10px;
+	margin: 0;
+}
+
+.hud dt { color: #8b929e; }
+.hud dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+
+.hud p { margin: 4px 0; }
+
+.results {
+	width: 100%;
+	margin-top: 12px;
+	border-collapse: collapse;
+	font-size: 11px;
+}
+
+.results th, .results td {
+	border-bottom: 1px solid #2a2e36;
+	padding: 3px 4px;
+	text-align: right;
+}
+
+.results th:first-child, .results td:first-child { text-align: left; }
+
+/*
+	The scheduler is drawing a video here, not a schedule: styled borders, no radii,
+	no padding, no transitions. Every one of those costs time 960 times a frame.
+*/
+#scheduler_here .dhx_cal_event_line {
+	border-radius: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	box-shadow: none !important;
+	transition: none !important;
+	animation: none !important;
+	cursor: default !important;
+	overflow: hidden;
+	border: 1px solid #00000054;
+	border-radius: 0 !important;
+	border-top: transparent !important;
+	border-left: transparent !important;
+}
+
+#scheduler_here .dhx_cal_event_line:hover {
+	filter: none;
+}
+
+#scheduler_here .dhx_timeline_label_wrapper,
+#scheduler_here .dhx_matrix_scell {
+	font-size: 9px;
+	color: #6b7280;
+	padding: 0 2px;
+}
+
+#scheduler_here .dhx_cal_data {
+	background: #000;
+}
