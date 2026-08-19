@@ -2,7 +2,11 @@ html, body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
+	/* the mobile URL bar makes 100vh taller than the screen; dvh is the real box */
+	height: 100dvh;
 	overflow: hidden;
+	overscroll-behavior: none;
+	-webkit-text-size-adjust: 100%;
 	font-family: Inter, Helvetica, Arial, sans-serif;
 	font-size: 13px;
 	background: #14161a;
@@ -46,6 +50,14 @@ body {
 
 .brand a:hover { text-decoration: underline; }
 
+/* the control cluster: one row on desktop, a scrolling strip on a phone */
+.controls {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 14px;
+}
+
 /* buttons that belong together read as one control */
 .segmented { display: flex; }
 .segmented > * { border-radius: 0; }
@@ -60,6 +72,7 @@ body {
 
 button, select, .file {
 	background: #2b303a;
+	touch-action: manipulation;
 	color: #e8eaed;
 	border: 1px solid #3a4150;
 	border-radius: 4px;
@@ -76,6 +89,9 @@ button:active { background: #22262e; }
 /* the primary action, so it does not disappear among the source buttons */
 #btn-bench { background: #33508f; border-color: #41619f; }
 #btn-bench:hover { background: #3c5c9f; border-color: #4d70b2; }
+
+/* the HUD is a sidebar on a wide screen, so it needs no handle there */
+.stats-toggle { display: none; }
 
 /* the native file input is unstyleable, so the label is the button */
 .file input { display: none; }
@@ -137,6 +153,7 @@ body.dropping .empty { background: rgba(24, 38, 64, 0.96); }
 .empty h2 { margin: 0; font-size: 19px; font-weight: 600; }
 .empty p { margin: 0; max-width: 440px; line-height: 1.55; color: #9aa2af; }
 .empty .choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 4px; }
+.rotate-hint { display: none; }
 
 .hud {
 	width: 250px;
@@ -216,4 +233,144 @@ body.dropping .empty { background: rgba(24, 38, 64, 0.96); }
 
 #scheduler_here .dhx_cal_data {
 	background: #000;
+}
+
+/* -------------------------------------------------------------- narrow screens
+
+	A phone has neither the width for a 250px sidebar nor the height for a header
+	that wraps into four rows. The picture is the point of the page, so it keeps
+	the whole viewport: the toolbar collapses into one scrolling strip and the HUD
+	becomes a sheet the viewer opens on demand.
+*/
+
+@media (max-width: 900px) {
+	.bar { padding: 8px 10px; gap: 8px; }
+
+	.brand {
+		width: 100%;
+		align-items: center;
+		gap: 10px;
+		margin-right: 0;
+	}
+
+	/* one line, whatever the device width - the link and the handle keep their room */
+	.brand h1 {
+		font-size: 13px;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.brand a { flex: none; }
+
+	.stats-toggle {
+		display: inline-block;
+		margin-left: auto;
+		flex: none;
+	}
+
+	body.stats-open .stats-toggle { background: #33508f; border-color: #41619f; }
+
+	/*
+		Everything stays reachable without stacking rows: the strip scrolls
+		sideways, and the fade on the trailing edge says so.
+	*/
+	.controls {
+		width: 100%;
+		flex-wrap: nowrap;
+		gap: 8px;
+		padding-right: 18px;
+		overflow-x: auto;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+		-webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
+		mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
+	}
+
+	.controls::-webkit-scrollbar { display: none; }
+	.controls > * { flex: none; }
+
+	/* the option text already says "size", and the word costs 40px of the strip */
+	.controls label:not(.file) { font-size: 0; gap: 0; }
+	.controls label:not(.file) select { font-size: 13px; }
+
+	/* thumb-sized targets */
+	button, select, .file { padding: 7px 11px; }
+
+	/* the sheet floats over the picture instead of taking a column from it */
+	.hud { display: none; }
+
+	body.stats-open .hud {
+		display: block;
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: auto;
+		max-height: 55dvh;
+		z-index: 6;
+		padding-bottom: calc(12px + env(safe-area-inset-bottom));
+		border-left: 0;
+		border-top: 1px solid #2a2e36;
+		box-shadow: 0 -14px 34px rgba(0, 0, 0, 0.45);
+	}
+
+	.empty { padding: 20px 16px; gap: 12px; overflow-y: auto; }
+	.empty h2 { font-size: 17px; }
+	.empty p { font-size: 13px; }
+
+	.empty .choices {
+		flex-direction: column;
+		align-self: stretch;
+		gap: 8px;
+	}
+
+	.empty .choices > * { padding: 11px; text-align: center; }
+
+	/*
+		The section labels are hidden rather than removed: the column is what keeps
+		the label rows and the data rows the same height.
+	*/
+	#scheduler_here .dhx_timeline_label_wrapper { visibility: hidden; }
+
+	/* a white scale bar over a black picture reads as a rendering glitch */
+	#scheduler_here { background: #14161a; }
+
+	#scheduler_here .dhx_cal_header,
+	#scheduler_here .dhx_scale_bar {
+		background: #1c1f25;
+		border-color: #2a2e36;
+		color: #6b7280;
+	}
+
+	#scheduler_here .dhx_cal_data { border-top-color: #2a2e36; }
+
+	/* the grid never fills the last few pixels of the row, and its light borders
+	   draw a bright line down the black margin there */
+	#scheduler_here .dhx_matrix_cell { border-color: #16181d; }
+}
+
+/*
+	A phone held sideways is where the picture looks best, and there every pixel
+	the toolbar keeps is a pixel the picture loses.
+*/
+@media (max-width: 900px) and (max-height: 500px) {
+	.bar { padding: 5px 10px; gap: 5px; }
+	.brand h1 { font-size: 12px; }
+	button, select, .file { padding: 4px 9px; }
+	.rotate-hint { display: none; }
+
+	/* the height is the scarce axis here, so the choices go back on one line */
+	.empty { padding: 12px 16px; gap: 8px; }
+	.empty .choices { flex-direction: row; align-self: auto; }
+}
+
+/* a touch device has nothing to drop a file with */
+@media (hover: none) {
+	.pointer-only { display: none; }
+}
+
+@media (hover: none) and (orientation: portrait) and (max-width: 900px) {
+	.rotate-hint { display: block; }
 }

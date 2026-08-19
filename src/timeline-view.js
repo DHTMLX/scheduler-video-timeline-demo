@@ -10,8 +10,21 @@ import { VIEW_START } from "./config.js";
 
 const VIEW_NAME = "video";
 
+/** Matches the CSS breakpoint: below it the layout is a phone layout. */
+const NARROW_WIDTH = 900;
+
 function computeRowHeight(available, rows) {
 	return Math.max(3, Math.floor(available / rows));
+}
+
+/**
+ * Width of the section-label column.
+ *
+ * On a phone those numbers are 44px of a 390px screen spent on labels that are
+ * too small to read anyway, so the picture takes the width instead.
+ */
+function labelColumnWidth() {
+	return window.innerWidth <= NARROW_WIDTH ? 0 : 44;
 }
 
 function applyRowHeight(view, rowHeight) {
@@ -59,15 +72,24 @@ export function applyPreset(scheduler, preset, sections) {
  */
 export function fitToContainer(scheduler, preset) {
 	const view = scheduler.matrix[VIEW_NAME];
-	let rowHeight = view.dy;
+	let repaint = false;
 
 	const dataArea = scheduler.$container.querySelector(".dhx_cal_data");
-	rowHeight = computeRowHeight(dataArea.clientHeight, preset.rows);
+	const rowHeight = computeRowHeight(dataArea.clientHeight, preset.rows);
 
 	if (view.dy !== rowHeight) {
 		applyRowHeight(view, rowHeight);
-		scheduler.updateView();
+		repaint = true;
 	}
+
+	// a rotation can cross the breakpoint, so the label column is re-decided here
+	const labelWidth = labelColumnWidth();
+	if (view.dx !== labelWidth) {
+		view.dx = labelWidth;
+		repaint = true;
+	}
+
+	if (repaint) scheduler.updateView();
 
 	let columnsWidth = 0;
 	for (let i = 0; i < scheduler._cols.length; i++) columnsWidth += scheduler._cols[i];
@@ -122,7 +144,7 @@ export function createVideoTimeline(scheduler, preset, sections, containerId) {
 		y_unit: sections,
 		y_property: "section_id",
 		render: "bar",
-		dx: 44,
+		dx: labelColumnWidth(),
 		dy: rowHeight,
 		event_dy: eventHeight,
 		event_min_dy: eventHeight,

@@ -13,7 +13,7 @@
 import { scheduler } from "./scheduler.js";
 import "./style.css";
 
-import { PRESETS, DEFAULT_PRESET, DEFAULT_QUANTIZE_BITS, validatePreset, poolSize } from "./config.js";
+import { PRESETS, defaultPresetKey, DEFAULT_QUANTIZE_BITS, validatePreset, poolSize } from "./config.js";
 import { createSampler } from "./sampler.js";
 import { createFrameEncoder } from "./quantize.js";
 import { createEventPool } from "./pool.js";
@@ -26,7 +26,7 @@ const BENCHMARK_MEASURE_MS = 10000;
 
 // options live in the hash so they survive a static host with no query rewriting
 const params = new URLSearchParams(location.hash.slice(1));
-const presetKey = PRESETS[params.get("preset")] ? params.get("preset") : DEFAULT_PRESET;
+const presetKey = PRESETS[params.get("preset")] ? params.get("preset") : defaultPresetKey();
 
 const hud = createHud(document.getElementById("hud"));
 
@@ -165,13 +165,13 @@ function loadVideoUrl(url, description) {
 			start();
 		})
 		.catch(function (error) {
-			setStatus("could not play: " + error.message);
+			reportProblem("could not play: " + error.message);
 		});
 }
 
 function loadCamera() {
 	if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-		setStatus("camera not available");
+		reportProblem("camera not available");
 		return;
 	}
 	navigator.mediaDevices
@@ -185,7 +185,7 @@ function loadCamera() {
 			});
 		})
 		.catch(function (error) {
-			setStatus("camera refused: " + error.message);
+			reportProblem("camera refused: " + error.message);
 		});
 }
 
@@ -201,6 +201,8 @@ function wait(ms) {
 function runBenchmark() {
 	const wasRunning = running;
 
+	// the numbers land in the HUD, which is a closed sheet on a phone
+	showStats(true);
 	start();
 	setStatus("benchmarking, " + (BENCHMARK_WARMUP_MS + BENCHMARK_MEASURE_MS) / 1000 + "s");
 
@@ -234,6 +236,21 @@ function renderResult(result) {
 
 function setStatus(text) {
 	document.getElementById("status").textContent = text;
+}
+
+/**
+ * The HUD is a sidebar on a wide screen and a sheet on a phone; the class does
+ * nothing in the first case, so both paths share one call.
+ */
+function showStats(open) {
+	document.body.classList.toggle("stats-open", open);
+	document.getElementById("btn-stats").setAttribute("aria-expanded", String(open));
+}
+
+/** Something failed, and the message is only useful if it is on screen. */
+function reportProblem(text) {
+	setStatus(text);
+	showStats(true);
 }
 
 // --------------------------------------------------------------------- init
@@ -277,6 +294,10 @@ function bindControls() {
 	});
 
 	on("btn-bench", runBenchmark);
+
+	on("btn-stats", function () {
+		showStats(!document.body.classList.contains("stats-open"));
+	});
 
 	let resizeTimer = null;
 	window.addEventListener("resize", function () {

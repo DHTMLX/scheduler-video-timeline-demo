@@ -47,6 +47,18 @@ export const PRESETS = {
 
 export const DEFAULT_PRESET = "medium";
 
+/**
+ * A phone gets the small workload by default.
+ *
+ * The medium preset asks a phone for ~700 event repaints a frame, and a visitor
+ * arriving from a link judges the component by whatever plays first. The heavier
+ * presets stay one tap away in the toolbar.
+ */
+export function defaultPresetKey() {
+	const shortSide = Math.min(window.innerWidth, window.innerHeight);
+	return shortSide <= 520 ? "small" : DEFAULT_PRESET;
+}
+
 /** Bits dropped from every color channel. 4 => 4096 distinct colors, as in the Bryntum demo. */
 export const DEFAULT_QUANTIZE_BITS = 4;
 

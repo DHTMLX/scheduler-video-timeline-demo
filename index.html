@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="theme-color" content="#1a1d23">
 	<title>Video in a Scheduler Timeline</title>
 	<meta name="description" content="A video playing inside DHTMLX Scheduler's Timeline view - every rectangle is a real scheduler event at a real point in time.">
 </head>
@@ -12,19 +13,23 @@
 	<div class="brand">
 		<h1>Video in a Scheduler Timeline</h1>
 		<a href="https://dhtmlx.com/blog/what-a-rickroll-taught-us-about-dhtmlx-scheduler-performance/" id="post-link" target="_blank" rel="noopener">read the story</a>
+		<!-- on a phone the HUD is a sheet, so it needs a handle; hidden on wide screens -->
+		<button id="btn-stats" class="stats-toggle" type="button" aria-expanded="false" aria-controls="hud">stats</button>
 	</div>
 
-	<label>size <select id="preset"></select></label>
+	<div class="controls">
+		<label>size <select id="preset"></select></label>
 
-	<div class="segmented">
-		<button id="btn-generated" type="button">built-in clip</button>
-		<label class="file">upload video<input id="file" type="file" accept="video/*"></label>
-		<button id="btn-camera" type="button">camera</button>
-	</div>
+		<div class="segmented">
+			<button id="btn-generated" type="button">built-in clip</button>
+			<label class="file">upload video<input id="file" type="file" accept="video/*"></label>
+			<button id="btn-camera" type="button">camera</button>
+		</div>
 
-	<div class="segmented">
-		<button id="btn-play" type="button">play / pause</button>
-		<button id="btn-bench" type="button">run benchmark</button>
+		<div class="segmented">
+			<button id="btn-play" type="button">play / pause</button>
+			<button id="btn-bench" type="button">run benchmark</button>
+		</div>
 	</div>
 </header>
 
@@ -39,7 +44,8 @@
 			<h2>This timeline is about to play a video</h2>
 			<p>
 				Every rectangle you are about to see is a real scheduler event with a real
-				start and end date. Drop a video file here to play it, or pick a source.
+				start and end date.<span class="pointer-only"> Drop a video file here to play it,
+				or pick a source.</span>
 			</p>
 			<div class="choices">
 				<label class="file" for="file">upload a video file</label>
@@ -49,6 +55,7 @@
 			<p class="small">
 				Nothing leaves your machine - the video is decoded in the browser and never uploaded.
 			</p>
+			<p class="small muted rotate-hint">Turn your phone sideways for a bigger picture.</p>
 		</div>
 	</div>
 
@@ -78,7 +85,7 @@
 
 		<table id="results" class="results" hidden></table>
 
-		<p class="small muted note">
+		<p class="small muted note pointer-only">
 			Drop a video file anywhere on the page to run it through the scheduler.
 		</p>
 	</aside>
